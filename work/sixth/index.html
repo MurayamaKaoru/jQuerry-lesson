@@ -16,69 +16,84 @@
   <script src="../../common/js/jquery.js"></script>
   <script>
     // 回答はここに書いてね
-    // 「捕まえる」失敗時の画面表示
-    let failHtml =
-    `
-      <p class="text">逃げられてしまった...</p>
-      <button class="btn mt" data-js="reset">戻る</button>
-    `
-
-    $('#pokemon_search').click(function() {
-    $.ajax({
-      url: 'https://pokeapi.co/api/v2/pokemon/1',
-      method: 'GET'
-    }).done(function(res) {
-      console.log(res);
-      let encountHtml =
-        `
-          <p class="name">${res.name}</p>
-          <div>
-            <img class="img" src="${res.sprites.front_default}" alt="">
-          </div>
-          <div>
-            <button class="btn" id="catch">捕まえる</button>
-            <button class="btn" data-js="reset">逃げる</button>
-          </div>
-        `
-      $('#wrapper').html(encountHtml);
-
-      $('.btn[data-js="reset"]').click(function() {
-        $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>')
-      })
-
-      $('#catch').click(function() {
-        let rand = Math.round(Math.random() * (2 - 1) + 1);
-        if(rand === 1) {
+    $('#wrapper').on('click', function() {
+      let pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + Math.round(Math.random() * (151 - 1) + 1)
+      $('#pokemon_search').click(function() {
         $.ajax({
-          url:'https://pokeapi.co/api/v2/item/4',
-          method:'GET'
-          }).done(function(res) {
-            console.log(res);
-            let doneHtml =
-              `
-                <p class="name">ゲットしました</p>
-                <div>
-                  <img class="img" src="${res.sprites.default}" alt="">
-                </div>
-                <button class="btn" data-js="reset">戻る</button>
-              `
-            $('#wrapper').html(doneHtml);
-          }).fail(function(err) {
+        url: pokeUrl,
+        method: 'GET'
+      }).done(function(res) {
+        console.log(res);
+        //「ポケモンを探す」ボタン押下
+        $.ajax({
+          url: res.species.url,
+          method: 'GET'
+        }).done(function(poke) {
+          let encountHtml =
+            `
+              <p class="name">${poke.names[0].name}</p>
+              <div>
+                <img class="img" src="${res.sprites.front_default}" alt="">
+              </div>
+              <div>
+                <button class="btn" id="catch">捕まえる</button>
+                <button class="btn" data-js="reset">逃げる</button>
+              </div>
+            `
+          $('#wrapper').html(encountHtml);
 
-          }
-        )}else{
-          let failHtml =
-            `
-              <p class="text">逃げられてしまった...</p>
-              <button class="btn mt" data-js="reset">戻る</button>
-            `
-          $('#wrapper').html(failHtml);
-        };
-      })
-    }).fail(function(err) {
-      
+          //「逃げる」ボタン押下
+          $('.btn[data-js="reset"]').click(function() {
+            $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>')
+          })
+
+          //「捕まえる」ボタン押下
+          $('#catch').click(function() {
+            let rand = Math.round(Math.random() * (2 - 1) + 1);
+            if(rand === 1) {
+              $.ajax({
+                url:'https://pokeapi.co/api/v2/item/4',
+                method:'GET'
+                }).done(function(res) {
+                  //捕獲成功時
+                  let doneHtml =
+                    `
+                      <p class="name">ゲットしました</p>
+                      <div>
+                        <img class="img" src="${res.sprites.default}" alt="">
+                      </div>
+                      <button class="btn" data-js="reset">戻る</button>
+                    `
+                  $('#wrapper').html(doneHtml);
+
+                  //「戻る」ボタン押下
+                  $('.btn[data-js="reset"]').click(function() {
+                    $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>')
+                  })
+                }).fail(function(err) {
+
+                }
+            )}else{
+              //捕獲失敗時
+              let failHtml =
+                `
+                  <p class="text">逃げられてしまった...</p>
+                  <button class="btn mt" data-js="reset">戻る</button>
+                `
+              $('#wrapper').html(failHtml);
+
+              //「戻る」ボタン押下
+              $('.btn[data-js="reset"]').click(function() {
+                $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>')
+              })
+            };
+          })
+        })
+      }).fail(function(err) {
+        
+        })
+      });
     })
-  });
 
 
   </script>
