@@ -50,9 +50,11 @@
 
             //「捕まえる」ボタン押下
             $('#catch').click(function() {
-              let rand = Math.round(Math.random() * (2 - 1) + 1);
-              
-              if(rand === 1) {
+              function collectJudge() {
+                return Math.round(Math.random() * (2 - 1) + 1);
+              };
+
+              if(collectJudge() === 1) {
               //捕獲成功時
                 $.ajax({
                   url:'https://pokeapi.co/api/v2/item/4',
