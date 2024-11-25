@@ -18,7 +18,10 @@
     // 回答はここに書いてね
     $(function() {
       $('#wrapper').on('click', function() {
-        let pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + Math.round(Math.random() * (151 - 1) + 1)
+        function randomPokeNum() {
+          return Math.round(Math.random() * (151 - 1) + 1);
+        }
+        let pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + allPoke();
         
         //「ポケモンを探す」ボタン押下
         $('#pokemon_search').click(function() {
