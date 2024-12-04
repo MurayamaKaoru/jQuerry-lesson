@@ -66,6 +66,7 @@
         
         //「ポケモンを探す」ボタン押下
         $('#pokemon_search').one('click', function() {
+          $(this).prop('disabled', true);
           $.ajax({
           url: pokeUrl,
           method: 'GET'
@@ -83,6 +84,7 @@
 
             //「捕まえる」ボタン押下
             $('#catch').one('click', function() {
+              $(this).prop('disabled', true);
               if(collectJudge() === 1) {
               //捕獲成功時
                 $.ajax({
