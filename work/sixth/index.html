@@ -23,8 +23,38 @@
           return Math.round(Math.random() * (151 - 1) + 1);
       }
 
+      function generateEncountHtml(res, japanese) {
+      return  `
+                <p class="name">${japanese.names[0].name}</p>
+                <div>
+                  <img class="img" src="${res.sprites.front_default}" alt="">
+                </div>
+                <div>
+                  <button class="btn" id="catch">捕まえる</button>
+                  <button class="btn" data-js="reset">逃げる</button>
+                </div>
+              `
+      }
+
       function collectJudge() {
           return Math.round(Math.random() * (2 - 1) + 1);
+      }
+
+      function generateDoneHtml(res) {
+        return `
+                 <p class="name">ゲットしました</p>
+                 <div>
+                   <img class="img" src="${res.sprites.default}" alt="">
+                 </div>
+                 <button class="btn" data-js="reset">戻る</button>
+               `
+      }
+
+      function generateFailHtml() {
+        return `
+                 <p class="text">逃げられてしまった...</p>
+                 <button class="btn mt" data-js="reset">戻る</button>
+               `
       }
 
       function reset() {
@@ -44,17 +74,8 @@
             url: res.species.url,
             method: 'GET'
           }).done(function(japanese) {
-            let encountHtml =
-              `
-                <p class="name">${japanese.names[0].name}</p>
-                <div>
-                  <img class="img" src="${res.sprites.front_default}" alt="">
-                </div>
-                <div>
-                  <button class="btn" id="catch">捕まえる</button>
-                  <button class="btn" data-js="reset">逃げる</button>
-                </div>
-              `
+            console.log(japanese);
+            let encountHtml = generateEncountHtml(res, japanese)
             $('#wrapper').html(encountHtml)
 
             //「逃げる」ボタン押下
@@ -68,25 +89,14 @@
                   url: pokeBall,
                   method: 'GET'
                   }).done(function(res) {
-                    let doneHtml =
-                      `
-                        <p class="name">ゲットしました</p>
-                        <div>
-                          <img class="img" src="${res.sprites.default}" alt="">
-                        </div>
-                        <button class="btn" data-js="reset">戻る</button>
-                      `
+                    let doneHtml = generateDoneHtml(res);
                     $('#wrapper').html(doneHtml);
 
                     //「戻る」ボタン押下
                     $('.btn[data-js="reset"]').one('click', reset);
               })}else{
               //捕獲失敗時
-                let failHtml =
-                  `
-                    <p class="text">逃げられてしまった...</p>
-                    <button class="btn mt" data-js="reset">戻る</button>
-                  `
+                let failHtml = generateFailHtml();
                 $('#wrapper').html(failHtml);
 
                 //「戻る」ボタン押下
