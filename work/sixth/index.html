@@ -20,11 +20,11 @@
       const pokeBall = 'https://pokeapi.co/api/v2/item/4'
 
       function randomPokeNumber() {
-          return Math.round(Math.random() * (151 - 1) + 1);
+        return Math.round(Math.random() * (151 - 1) + 1);
       }
 
       function generateEncountHtml(res, japanese) {
-      return  `
+        return `
                 <p class="name">${japanese.names[0].name}</p>
                 <div>
                   <img class="img" src="${res.sprites.front_default}" alt="">
@@ -37,17 +37,17 @@
       }
 
       function collectJudge() {
-          return Math.round(Math.random() * (2 - 1) + 1);
+        return Math.round(Math.random() * (2 - 1) + 1);
       }
 
       function generateDoneHtml(res) {
         return `
-                 <p class="name">ゲットしました</p>
-                 <div>
-                   <img class="img" src="${res.sprites.default}" alt="">
-                 </div>
-                 <button class="btn" data-js="reset">戻る</button>
-               `
+                <p class="name">ゲットしました</p>
+                <div>
+                  <img class="img" src="${res.sprites.default}" alt="">
+                </div>
+                <button class="btn" data-js="reset">戻る</button>
+              `
       }
 
       function generateFailHtml() {
@@ -58,15 +58,12 @@
       }
 
       function reset() {
-          return $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
+        return $('#wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
       }
-
-      $('#wrapper').on('click', function() {
-        let pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + randomPokeNumber();
-        
         //「ポケモンを探す」ボタン押下
-        $('#pokemon_search').one('click', function() {
-          $(this).prop('disabled', true);
+        $('#wrapper').on('click', '#pokemon_search', function() {
+        let pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + randomPokeNumber();
+
           $.ajax({
           url: pokeUrl,
           method: 'GET'
@@ -80,11 +77,10 @@
             $('#wrapper').html(encountHtml)
 
             //「逃げる」ボタン押下
-            $('.btn[data-js="reset"]').one('click', reset);
+            $('#wrapper').on('click', '.btn[data-js="reset"]', reset);
 
             //「捕まえる」ボタン押下
-            $('#catch').one('click', function() {
-              $(this).prop('disabled', true);
+            $('#wrapper').on('click', '#catch', function() {
               if(collectJudge() === 1) {
               //捕獲成功時
                 $.ajax({
@@ -95,22 +91,20 @@
                     $('#wrapper').html(doneHtml);
 
                     //「戻る」ボタン押下
-                    $('.btn[data-js="reset"]').one('click', reset);
+                    $('#wrapper').one('click', '.btn[data-js="reset"]', reset);
               })}else{
               //捕獲失敗時
                 let failHtml = generateFailHtml();
                 $('#wrapper').html(failHtml);
 
                 //「戻る」ボタン押下
-                $('.btn[data-js="reset"]').one('click', reset);
+                $('#wrapper').on('click', '.btn[data-js="reset"]',  reset);
               };
             })
           })
         })
         });
       })
-    });
-
 
   </script>
 </body>
